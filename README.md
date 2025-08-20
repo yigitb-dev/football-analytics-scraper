@@ -1,2 +1,2 @@
 # football-analytics-scraper
-Python scraper that collects Turkish Super Lig player ratings from FotMob, stores them in a pandas DataFrame, and outputs clean CSV data for analysis.
+This project scrapes player ratings from the Turkish Super Lig on FotMob using Selenium and BeautifulSoup. It collects player names and ratings, stores them in a structured pandas DataFrame, and saves the data to a CSV file for analysis. The project demonstrates web scraping, data cleaning, and automation skills, and serves as a foundation for football analytics projects.
