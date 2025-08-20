@@ -5,7 +5,14 @@ from bs4 import BeautifulSoup
 import time
 import pandas as pd
 
-def get_fotmob_ratings():
+eng_league = f"https://www.fotmob.com/tr/leagues/47/stats/season/27110/players/rating/premier-league?page="
+tr_leauge = f"https://www.fotmob.com/tr/leagues/71/stats/season/27244/players/rating/super-lig?page="
+bel_league = f"https://www.fotmob.com/tr/leagues/40/stats/season/27152/players/rating/first-division?page="
+spa_league = f"https://www.fotmob.com/tr/leagues/87/stats/season/27233/players/rating/laliga?page="
+ned_league = f"https://www.fotmob.com/tr/leagues/57/stats/season/27131/players/rating/eredivisie?page="
+fra_league = f"https://www.fotmob.com/tr/leagues/53/stats/season/27212/players/rating/ligue-1?page="
+
+def get_fotmob_ratings(url):
 
     options = Options()
     options.add_argument("--headless")  
@@ -13,21 +20,16 @@ def get_fotmob_ratings():
 
     data = []
 
-    for i in range(28):
-
-        url = f"https://www.fotmob.com/tr/leagues/71/stats/season/27244/players/rating/super-lig?page={i}"
-        driver.get(url)
-
-        if i == 0:
-            # Wait for the page to load completely
-            time.sleep(5) 
-
-
+    page = 0
+    while True:
+        driver.get(url + f"{page}")
+        time.sleep(2)
         soup = BeautifulSoup(driver.page_source, "html.parser")
-
-
         players = soup.find_all("div", class_="css-1u3ja2l-LeagueSeasonStatsTableRowCSS e4r748v9")
-
+        
+        if not players:  # stop if page is empty
+            break
+        
         for player in players:
             name = player.find("span", class_="css-cfc8cy-TeamOrPlayerName e4r748v6").text.strip()
             rating = player.find("span", class_="css-1mzgpr3-StatValue e4r748v8").text.strip()
@@ -35,10 +37,12 @@ def get_fotmob_ratings():
                 "name": name,
                 "rating": rating
             })
+        
+        page += 1
 
     driver.quit()
     return pd.DataFrame(data)
 
-df = get_fotmob_ratings()
-df.to_csv("superlig_player_ratings.csv", index=False)
+df = get_fotmob_ratings(eng_league)
+df.to_csv("player_ratings.csv", index=False)
 print(df.head())
