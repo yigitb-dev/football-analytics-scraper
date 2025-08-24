@@ -44,5 +44,5 @@ def get_fotmob_ratings(url):
     return pd.DataFrame(data)
 
 df = get_fotmob_ratings(eng_league)
-df.to_csv("player_ratings.csv", index=False)
+df.to_csv("Output/player_ratings.csv", index=False)
 print(df.head())
